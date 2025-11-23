@@ -24,8 +24,8 @@ WORKDIR /root/
 # Copy the binary from builder stage
 COPY --from=builder /app/bin/security-tools .
 
-# Copy migrations if they exist
-COPY --from=builder /app/migrations ./migrations
+# # Copy migrations if they exist
+# COPY --from=builder /app/migrations ./migrations
 
 # Expose port
 EXPOSE 8080
