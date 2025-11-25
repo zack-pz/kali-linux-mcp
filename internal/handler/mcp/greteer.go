@@ -2,7 +2,8 @@ package mcp
 
 import (
 	"context"
-	"security-tools/internal/usecase"
+
+	"github.com/zack-pz/kali-linux-mcp/internal/usecase"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )

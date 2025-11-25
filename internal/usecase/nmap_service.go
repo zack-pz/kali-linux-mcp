@@ -1,6 +1,6 @@
 package usecase
 
-import "security-tools/internal/repository"
+import "github.com/zack-pz/kali-linux-mcp/internal/repository"
 
 type localNmapService struct {
 	repo repository.LocalNmapRepository

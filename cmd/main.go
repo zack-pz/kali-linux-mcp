@@ -4,8 +4,8 @@ import (
 	"context"
 	"log"
 
-	"security-tools/internal/di"
-	"security-tools/pkg/config"
+	"github.com/zack-pz/kali-linux-mcp/internal/di"
+	"github.com/zack-pz/kali-linux-mcp/pkg/config"
 
 	"github.com/docker/docker/client"
 	"github.com/modelcontextprotocol/go-sdk/mcp"

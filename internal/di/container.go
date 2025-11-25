@@ -1,10 +1,10 @@
 package di
 
 import (
-	"security-tools/internal/handler/mcp"
-	"security-tools/internal/repository"
-	"security-tools/internal/usecase"
-	"security-tools/pkg/config"
+	"github.com/zack-pz/kali-linux-mcp/internal/handler/mcp"
+	"github.com/zack-pz/kali-linux-mcp/internal/repository"
+	"github.com/zack-pz/kali-linux-mcp/internal/usecase"
+	"github.com/zack-pz/kali-linux-mcp/pkg/config"
 )
 
 type Container struct {

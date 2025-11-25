@@ -1,4 +1,4 @@
-module security-tools
+module github.com/zack-pz/kali-linux-mcp
 
 go 1.24.0
 

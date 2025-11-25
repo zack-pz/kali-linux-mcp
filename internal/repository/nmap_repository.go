@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"security-tools/pkg/config"
+	"github.com/zack-pz/kali-linux-mcp/pkg/config"
 )
 
 type localNmapRepository struct {
