@@ -9,6 +9,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/zack-pz/kali-linux-mcp/pkg/logger"
 )
 
 type TerminalClient struct {
@@ -25,15 +27,18 @@ func NewTerminalClient() (IExecutor, error) {
 
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
+		logger.Error(err)
 		return nil, err
 	}
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
+		logger.Error(err)
 		return nil, err
 	}
 
 	if err := cmd.Start(); err != nil {
+		logger.Error(err)
 		return nil, err
 	}
 
@@ -56,6 +61,7 @@ func (t *TerminalClient) Run(cmd string) (string, error) {
 
 	_, err := fmt.Fprintln(t.stdin, fullCmd)
 	if err != nil {
+		logger.Error(err)
 		return "", err
 	}
 
@@ -72,6 +78,7 @@ func (t *TerminalClient) Run(cmd string) (string, error) {
 	}
 
 	if err := t.scanner.Err(); err != nil {
+		logger.Error(err)
 		return "", err
 	}
 
@@ -81,4 +88,5 @@ func (t *TerminalClient) Run(cmd string) (string, error) {
 func (t *TerminalClient) Close() {
 	t.stdin.Close()
 	t.cmd.Process.Kill()
+	logger.Info("Terminal client closed")
 }

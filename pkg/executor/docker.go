@@ -7,6 +7,7 @@ import (
 
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
+	"github.com/zack-pz/kali-linux-mcp/pkg/logger"
 )
 
 type DockerExecutor struct {
@@ -32,18 +33,22 @@ func (d *DockerExecutor) Run(command string) (string, error) {
 	}
 	respID, err := d.Client.ContainerExecCreate(d.Ctx, d.ContainerID, execConfig)
 	if err != nil {
+		logger.Error(err)
 		return "", err
 	}
 
 	resp, err := d.Client.ContainerExecAttach(d.Ctx, respID.ID, container.ExecStartOptions{})
 	if err != nil {
+		logger.Error(err)
 		return "", err
 	}
 	defer resp.Close()
 
 	output, err := io.ReadAll(resp.Reader)
 	if err != nil {
+		logger.Error(err)
 		return "", err
 	}
+
 	return strings.TrimSpace(string(output)), nil
 }

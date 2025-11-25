@@ -2,11 +2,11 @@ package main
 
 import (
 	"context"
-	"log"
 
 	"github.com/zack-pz/kali-linux-mcp/internal/di"
 	"github.com/zack-pz/kali-linux-mcp/pkg/config"
 	"github.com/zack-pz/kali-linux-mcp/pkg/executor"
+	"github.com/zack-pz/kali-linux-mcp/pkg/logger"
 
 	"github.com/docker/docker/client"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
@@ -15,7 +15,7 @@ import (
 
 func main() {
 	cfg := config.Load()
-
+	logger.Init()
 	ctx := context.Background()
 
 	exec := startConnection(cfg, ctx)
@@ -26,12 +26,12 @@ func main() {
 
 	container := di.NewContainer(exec)
 
-	// Create a server with a single tool.
 	server := mcp.NewServer(&mcp.Implementation{Name: "server", Version: "v1.0.0"}, nil)
 	container.GetNmapHandler().Register(server)
 
+	logger.Info("Server started")
 	if err := server.Run(ctx, &mcp.StdioTransport{}); err != nil {
-		log.Fatal(err)
+		logger.Error(err)
 	}
 }
 
@@ -41,7 +41,7 @@ func startConnection(cfg *config.Config, ctx context.Context) executor.IExecutor
 	case "docker":
 		cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 		if err != nil {
-			log.Fatal(err)
+			logger.Error(err)
 		}
 		return executor.NewDockerExecutor(cli, ctx, "")
 
@@ -54,14 +54,14 @@ func startConnection(cfg *config.Config, ctx context.Context) executor.IExecutor
 		}
 		clientSSH, err := ssh.Dial("tcp", "localhost:22", cfg)
 		if err != nil {
-			log.Fatal(err)
+			logger.Error(err)
 		}
 		return executor.NewSSHExecutor(clientSSH)
 
 	case "local":
 		clientLocal, err := executor.NewTerminalClient()
 		if err != nil {
-			log.Fatal(err)
+			logger.Error(err)
 		}
 		return clientLocal
 

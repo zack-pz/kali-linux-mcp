@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/zack-pz/kali-linux-mcp/internal/usecase"
+	"github.com/zack-pz/kali-linux-mcp/pkg/logger"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
@@ -31,6 +32,7 @@ func (l *LocalHandler) SayHi(ctx context.Context, req *mcp.CallToolRequest, inpu
 ) {
 	greeting, err := l.usecase.Hi(input.Name)
 	if err != nil {
+		logger.Error(err)
 		return nil, GreetOutput{}, err
 	}
 	return nil, GreetOutput{Greeting: greeting}, nil
