@@ -4,14 +4,14 @@ import (
 	"github.com/zack-pz/kali-linux-mcp/internal/handler/mcp"
 	"github.com/zack-pz/kali-linux-mcp/internal/repository"
 	"github.com/zack-pz/kali-linux-mcp/internal/usecase"
-	"github.com/zack-pz/kali-linux-mcp/pkg/config"
+	"github.com/zack-pz/kali-linux-mcp/pkg/executor"
 )
 
 type Container struct {
 	// dockerExecutor *config.DockerExecutor
 	// sshExecutor    *ssh.Client
 	// localExecutor  *config.TerminalClient
-	exec config.IExecutor
+	exec executor.IExecutor
 
 	// Repository
 	localNmapRepository repository.LocalNmapRepository
@@ -23,7 +23,7 @@ type Container struct {
 	localNmapHandler *mcp.LocalHandler
 }
 
-func NewContainer(exec config.IExecutor) *Container {
+func NewContainer(exec executor.IExecutor) *Container {
 	c := &Container{
 		exec: exec,
 	}

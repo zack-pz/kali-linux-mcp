@@ -1,14 +1,14 @@
 package repository
 
 import (
-	"github.com/zack-pz/kali-linux-mcp/pkg/config"
+	"github.com/zack-pz/kali-linux-mcp/pkg/executor"
 )
 
 type localNmapRepository struct {
-	exec config.IExecutor
+	exec executor.IExecutor
 }
 
-func NewLocalNmapRepository(exec config.IExecutor) *localNmapRepository {
+func NewLocalNmapRepository(exec executor.IExecutor) *localNmapRepository {
 	return &localNmapRepository{exec: exec}
 }
 

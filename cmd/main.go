@@ -6,6 +6,7 @@ import (
 
 	"github.com/zack-pz/kali-linux-mcp/internal/di"
 	"github.com/zack-pz/kali-linux-mcp/pkg/config"
+	"github.com/zack-pz/kali-linux-mcp/pkg/executor"
 
 	"github.com/docker/docker/client"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
@@ -34,7 +35,7 @@ func main() {
 	}
 }
 
-func startConnection(cfg *config.Config, ctx context.Context) config.IExecutor {
+func startConnection(cfg *config.Config, ctx context.Context) executor.IExecutor {
 	switch cfg.Environment {
 
 	case "docker":
@@ -42,7 +43,7 @@ func startConnection(cfg *config.Config, ctx context.Context) config.IExecutor {
 		if err != nil {
 			log.Fatal(err)
 		}
-		return config.NewDockerExecutor(cli, ctx, "")
+		return executor.NewDockerExecutor(cli, ctx, "")
 
 	case "ssh":
 		cfg := &ssh.ClientConfig{
@@ -55,10 +56,10 @@ func startConnection(cfg *config.Config, ctx context.Context) config.IExecutor {
 		if err != nil {
 			log.Fatal(err)
 		}
-		return config.NewSSHExecutor(clientSSH)
+		return executor.NewSSHExecutor(clientSSH)
 
 	case "local":
-		clientLocal, err := config.NewTerminalClient()
+		clientLocal, err := executor.NewTerminalClient()
 		if err != nil {
 			log.Fatal(err)
 		}
