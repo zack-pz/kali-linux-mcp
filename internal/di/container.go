@@ -1,9 +1,8 @@
 package di
 
 import (
-	"github.com/zack-pz/kali-linux-mcp/internal/handler/mcp"
-	"github.com/zack-pz/kali-linux-mcp/internal/repository"
-	"github.com/zack-pz/kali-linux-mcp/internal/usecase"
+	"github.com/zack-pz/kali-linux-mcp/internal/mcp"
+	"github.com/zack-pz/kali-linux-mcp/internal/services/nmap"
 	"github.com/zack-pz/kali-linux-mcp/pkg/executor"
 )
 
@@ -14,13 +13,10 @@ type Container struct {
 	exec executor.IExecutor
 
 	// Repository
-	localNmapRepository repository.LocalNmapRepository
-
-	// UseCase
-	localNmapUseCase usecase.LocalNmapUseCase
+	localNmapRepository nmap.NmapRepository
 
 	// Handler
-	localNmapHandler *mcp.LocalHandler
+	localNmapHandler *mcp.NmapHandler
 }
 
 func NewContainer(exec executor.IExecutor) *Container {
@@ -28,24 +24,19 @@ func NewContainer(exec executor.IExecutor) *Container {
 		exec: exec,
 	}
 	c.setupRepositories()
-	c.setupUseCases()
 	c.setupHandlers()
 	return c
 }
 
 func (c *Container) setupRepositories() {
-	c.localNmapRepository = repository.NewLocalNmapRepository(c.exec)
-}
-
-func (c *Container) setupUseCases() {
-	c.localNmapUseCase = usecase.NewLocalNmapService(c.localNmapRepository)
+	c.localNmapRepository = nmap.NewNmapRepository(c.exec)
 }
 
 func (c *Container) setupHandlers() {
-	c.localNmapHandler = mcp.NewLocalHandler(c.localNmapUseCase)
+	c.localNmapHandler = mcp.NewNmapHandler(c.localNmapRepository)
 }
 
 // Getters
-func (c *Container) GetNmapHandler() *mcp.LocalHandler {
+func (c *Container) GetNmapHandler() *mcp.NmapHandler {
 	return c.localNmapHandler
 }
