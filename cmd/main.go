@@ -18,6 +18,11 @@ func main() {
 	ctx := context.Background()
 
 	exec := startConnection(cfg, ctx)
+	// if exec is nil, go to panic. Fix this.
+	if exec == nil {
+		panic("failed to start connection")
+	}
+
 	container := di.NewContainer(exec)
 
 	// Create a server with a single tool.
@@ -46,18 +51,18 @@ func startConnection(cfg *config.Config, ctx context.Context) config.IExecutor {
 				ssh.Password("password"),
 			},
 		}
-		client, err := ssh.Dial("tcp", "localhost:22", cfg)
+		clientSSH, err := ssh.Dial("tcp", "localhost:22", cfg)
 		if err != nil {
 			log.Fatal(err)
 		}
-		return config.NewSSHExecutor(client)
+		return config.NewSSHExecutor(clientSSH)
 
 	case "local":
-		client, err := config.NewTerminalClient()
+		clientLocal, err := config.NewTerminalClient()
 		if err != nil {
 			log.Fatal(err)
 		}
-		return client
+		return clientLocal
 
 	default:
 		return nil
