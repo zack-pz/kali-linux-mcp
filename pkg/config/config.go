@@ -8,10 +8,7 @@ import (
 )
 
 type Config struct {
-	Port        string
-	Environment string
-	LogLevel    string
-	Kali_url    string
+	Kali_url string
 }
 
 func Load() *Config {
@@ -20,10 +17,7 @@ func Load() *Config {
 		log.Fatal("Error loading .env file")
 	}
 	return &Config{
-		Port:        getEnv("PORT", "8080"),
-		Environment: getEnv("ENVIRONMENT", "local"),
-		LogLevel:    getEnv("LOG_LEVEL", "info"),
-		Kali_url:    getEnv("KALI_URL", "http://localhost:8080"),
+		Kali_url: getEnv("KALI_URL", "local://"),
 	}
 }
 

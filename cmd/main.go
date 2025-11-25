@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"net/url"
 
 	"github.com/zack-pz/kali-linux-mcp/internal/di"
 	"github.com/zack-pz/kali-linux-mcp/pkg/config"
@@ -16,9 +17,9 @@ import (
 func main() {
 	cfg := config.Load()
 	logger.Init()
-	ctx := context.Background()
 
-	exec := startConnection(cfg, ctx)
+	ctx := context.Background()
+	exec := startConnection(cfg.Kali_url, ctx)
 	// if exec is nil, go to panic. Fix this.
 	if exec == nil {
 		panic("failed to start connection")
@@ -35,15 +36,21 @@ func main() {
 	}
 }
 
-func startConnection(cfg *config.Config, ctx context.Context) executor.IExecutor {
-	switch cfg.Environment {
+func startConnection(target string, ctx context.Context) executor.IExecutor {
+	u, err := url.Parse(target)
+	if err != nil {
+		logger.Error(err)
+	}
+
+	switch u.Scheme {
 
 	case "docker":
 		cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 		if err != nil {
 			logger.Error(err)
+			return nil
 		}
-		return executor.NewDockerExecutor(cli, ctx, "")
+		return executor.NewDockerExecutor(cli, ctx, u.Host)
 
 	case "ssh":
 		cfg := &ssh.ClientConfig{
@@ -66,6 +73,7 @@ func startConnection(cfg *config.Config, ctx context.Context) executor.IExecutor
 		return clientLocal
 
 	default:
+		logger.Error("unknown target scheme")
 		return nil
 	}
 }
