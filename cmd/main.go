@@ -3,20 +3,23 @@ package main
 import (
 	"context"
 	"net/url"
+	"os"
 
+	"github.com/mark3labs/mcp-go/server"
 	"github.com/zack-pz/kali-linux-mcp/internal/di"
 	"github.com/zack-pz/kali-linux-mcp/pkg/config"
 	"github.com/zack-pz/kali-linux-mcp/pkg/executor"
 	"github.com/zack-pz/kali-linux-mcp/pkg/logger"
 
 	"github.com/docker/docker/client"
-	"github.com/modelcontextprotocol/go-sdk/mcp"
 	"golang.org/x/crypto/ssh"
 )
 
 func main() {
 	cfg := config.Load()
 	logger.Init()
+
+	s := server.NewMCPServer("KaliLinux", "1.0.0")
 
 	ctx := context.Background()
 	exec := startConnection(cfg.Kali_url, ctx)
@@ -27,11 +30,10 @@ func main() {
 
 	container := di.NewContainer(exec)
 
-	server := mcp.NewServer(&mcp.Implementation{Name: "server", Version: "v1.0.0"}, nil)
-	container.GetNmapHandler().Register(server)
+	container.GetNmapHandler().Register(s)
 
 	logger.Info("Server started")
-	if err := server.Run(ctx, &mcp.StdioTransport{}); err != nil {
+	if err := server.NewStdioServer(s).Listen(ctx, os.Stdin, os.Stdout); err != nil {
 		logger.Error(err)
 	}
 }
