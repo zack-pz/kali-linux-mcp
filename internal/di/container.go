@@ -3,6 +3,7 @@ package di
 import (
 	"github.com/zack-pz/kali-linux-mcp/internal/mcp"
 	"github.com/zack-pz/kali-linux-mcp/internal/services/nmap"
+	"github.com/zack-pz/kali-linux-mcp/internal/services/sslscan"
 	"github.com/zack-pz/kali-linux-mcp/pkg/executor"
 )
 
@@ -13,10 +14,12 @@ type Container struct {
 	exec executor.IExecutor
 
 	// Repository
-	localNmapRepository nmap.NmapRepository
+	nmapRepository    nmap.NmapRepository
+	sslScanRepository sslscan.SSLScanRepository
 
 	// Handler
-	localNmapHandler *mcp.NmapHandler
+	nmapHandler    *mcp.NmapHandler
+	sslScanHandler *mcp.SSLScanHandler
 }
 
 func NewContainer(exec executor.IExecutor) *Container {
@@ -29,14 +32,20 @@ func NewContainer(exec executor.IExecutor) *Container {
 }
 
 func (c *Container) setupRepositories() {
-	c.localNmapRepository = nmap.NewNmapRepository(c.exec)
+	c.nmapRepository = nmap.NewNmapRepository(c.exec)
+	c.sslScanRepository = sslscan.NewSSLScanRepository(c.exec)
 }
 
 func (c *Container) setupHandlers() {
-	c.localNmapHandler = mcp.NewNmapHandler(c.localNmapRepository)
+	c.nmapHandler = mcp.NewNmapHandler(c.nmapRepository)
+	c.sslScanHandler = mcp.NewSSLScanHandler(c.sslScanRepository)
 }
 
 // Getters
 func (c *Container) GetNmapHandler() *mcp.NmapHandler {
-	return c.localNmapHandler
+	return c.nmapHandler
+}
+
+func (c *Container) GetSSLScanHandler() *mcp.SSLScanHandler {
+	return c.sslScanHandler
 }

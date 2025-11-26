@@ -29,6 +29,7 @@ func main() {
 
 	server := mcp.NewServer(&mcp.Implementation{Name: "server", Version: "v1.0.0"}, nil)
 	container.GetNmapHandler().Register(server)
+	container.GetSSLScanHandler().Register(server)
 
 	logger.Info("Server started")
 	if err := server.Run(ctx, &mcp.StdioTransport{}); err != nil {
