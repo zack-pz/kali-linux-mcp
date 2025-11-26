@@ -31,6 +31,7 @@ func main() {
 	container.GetNmapHandler().Register(server)
 	container.GetSSLScanHandler().Register(server)
 	container.GetSqlmapHandler().Register(server)
+	container.GetSslyzeHandler().Register(server)
 
 	logger.Info("Server started")
 	if err := server.Run(ctx, &mcp.StdioTransport{}); err != nil {
